@@ -1,2 +1,2 @@
-# nginx-confi-files
-This repo contains proxy and web server files
+# nginx-config-files
+This repo contains proxy and web server files for running Nginx in Kubernetes/Openshift.
