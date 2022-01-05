@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  ingressClassName: nginx # use only with k8s version >= 1.18.0
+  tls:
+  - hosts:
+      - nginx-ingress.apps.r192b.r192b.dsp.lab
+    secretName: testsecret-tls    
+  rules:
+  - host: nginx-ingress.apps.r192b.r192b.dsp.lab
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          serviceName: nginx
+          servicePort: 80
+      - path: /ws
+        pathType: ImplementationSpecific
+        backend:
+          serviceName: nginx-ws
+          servicePort: 80
+
+

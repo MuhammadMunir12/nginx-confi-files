@@ -1,0 +1,16 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    openshift.io/host.generated: "true"
+  name: nginx-ingress
+  namespace: nginx-ingress
+  selfLink: /apis/route.openshift.io/v1/namespaces/nginx-ingress/routes/nginx-ingress
+spec:
+  host: nginx-ingress.apps.r192b.r192b.dsp.lab
+  to:
+    kind: Service
+    name: nginx
+    weight: 100
+  wildcardPolicy: None
+

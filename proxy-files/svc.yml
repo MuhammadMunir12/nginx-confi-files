@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+ type: NodePort #LoadBalancer
+ ports:
+ - port: 80
+   name: http
+   protocol: TCP
+   targetPort: 80
+   nodePort: 30008
+ - port: 443
+   name: https
+   protocol: TCP
+   targetPort: 443
+   nodePort: 30009
+ selector:
+   app: nginx
+   # externalIPs:
+   #- 100.67.192.155 
+   #status:
+   #loadBalancer:
+   #ingress:
+   # - ip: 100.67.192.155

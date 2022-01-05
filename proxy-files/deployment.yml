@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: nginx-ingress
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      nodeSelector:
+        compute1: worker1
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: nginx-conf
+          items:
+            - key: nginx.conf
+              path: nginx.conf
+            - key: default.conf
+              path: default.conf
+            - key: index.html
+              path: index.html
+      - name: ca-pem
+        configMap:
+          name: ca-pem
+      - name: ca-crt
+        configMap:
+          name: ca-crt
+      - name: ca-key
+        configMap:
+          name: ca-key
+      containers:
+      - name: nginx-alpine-perl
+        image: docker.io/library/nginx@sha256:51212c2cc0070084b2061106d5711df55e8aedfc6091c6f96fabeff3e083f355
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        securityContext:
+          allowPrivilegeEscalation: false
+          #runAsUser: 0
+        volumeMounts:
+          - name: nginx-conf
+            mountPath: /etc/nginx
+            #subPath: nginx.conf
+            readOnly: true
+          - name: nginx-conf
+            mountPath: /etc/nginx/conf.d
+            readOnly: true
+          - name: nginx-conf
+            mountPath: /usr/share/nginx/html
+            #subPath: nginx.conf
+            readOnly: true
+          - name: nginx-conf
+            mountPath: /etc/nginx/
+            #subPath: nginx.conf
+            readOnly: true  
+          - name: ca-pem
+            mountPath: /etc/letsencrypt/rootCA.pem
+            subPath: rootCA.pem            
+            readOnly: false
+          - name: ca-crt
+            mountPath: /etc/letsencrypt/server.crt
+            subPath: server.crt
+            readOnly: false
+          - name: ca-key
+            mountPath: /etc/letsencrypt/server.key
+            subPath: server.key
+            readOnly: true
+

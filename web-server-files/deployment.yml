@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment-ws
+  namespace: nginx-ingress
+spec:
+  selector:
+    matchLabels:
+      app: nginx-ws
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-ws
+    spec:
+      nodeSelector:
+        compute2: worker2
+      securityContext: {}
+      volumes:
+      - name: nginx-conf-ws
+        configMap:
+          name: nginx-conf-ws
+          items:
+            - key: nginx.conf
+              path: nginx.conf
+            - key: default.conf
+              path: default.conf
+            - key: index.html
+              path: index.html
+      # persistent volume mounted
+      - name: pv-storage-for-qa
+        persistentVolumeClaim:
+          claimName: pv-claim-for-qa
+      # container deatails
+      containers:
+      - name: nginx-alpine-perl
+        image: docker.io/library/nginx@sha256:51212c2cc0070084b2061106d5711df55e8aedfc6091c6f96fabeff3e083f355
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        securityContext:
+          allowPrivilegeEscalation: false
+          #runAsUser: 0
+        volumeMounts:
+          - name: nginx-conf-ws
+            mountPath: /etc/nginx
+            #subPath: nginx.conf
+            readOnly: true
+          - name: nginx-conf-ws
+            mountPath: /etc/nginx/conf.d
+            readOnly: true
+          - name: nginx-conf-ws
+            mountPath: /usr/share/nginx/html
+            #subPath: nginx.conf
+            readOnly: true
+          - name: nginx-conf-ws
+            mountPath: /etc/nginx/
+            #subPath: nginx.conf
+            readOnly: true  
+          # volume mounting in container using pvc
+          - mountPath: "/usr/share/nginx/bin"
+            name: pv-storage-for-qa
