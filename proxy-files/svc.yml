@@ -18,8 +18,8 @@ spec:
  selector:
    app: nginx
    # externalIPs:
-   #- 100.67.192.155 
+   #- <pub ip> 
    #status:
    #loadBalancer:
    #ingress:
-   # - ip: 100.67.192.155
+   # - ip: <pub-ip>
